@@ -1,0 +1,118 @@
+server:
+  port: 9002
+
+# Logger Config
+logging:
+  level:
+    root: info
+    com.xindacloud.portal.dao: debug
+  pattern:
+    console: '%p%m%n'
+
+# Mybatis-plus Config
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  type-aliases-package: com.xindacloud.portal.entity,com.xindacloud.portal.vo
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false
+    field-strategy: 2
+
+---
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100KB
+  profiles: dev
+  application:
+    name: portal
+  # DataSource Config
+  datasource:
+    hikari:
+      idle-timeout: 200000
+      maximum-pool-size: 10
+      minimum-idle: 30
+      connection-timeout: 600000
+      connection-test-query: SELECT 1
+      pool-name: HikariPool
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://68.79.31.171:36506/smsdb?useSSL=false&useUnicode=true&characterEncoding=utf-8&verifyServerCertificate=false&allowMultiQueries=true
+    username: root
+    password: c6a8b2072cc
+  redis:
+    host: 68.79.31.171
+    port: 20480
+    password: a1d2m3i4n5
+    jedis:
+      pool:
+        max-idle: 2
+        min-idle: 1
+        max-active: 3
+        max-wait: 3000
+  session:
+    store-type: redis
+sms:
+  endpoint:
+    services:
+      send-Message-Url: http://SMS-ALB-1661755337.cn-northwest-1.elb.amazonaws.com.cn/api/v1/portal/sms/open/submit
+  thread:
+    pool:
+      max-thread: 20
+  aws:
+    region: cn-northwest-1
+    bucket-name: ${sms_report_bucket}
+  report:
+    path: D:\\tmp\\
+swagger:
+  enable: false
+
+
+---
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100KB
+  profiles: prod
+  application:
+    name: message-portal-manager
+  # DataSource Config
+  datasource:
+    hikari:
+      idle-timeout: 200000
+      maximum-pool-size: 10
+      minimum-idle: 30
+      connection-timeout: 600000
+      connection-test-query: SELECT 1
+      pool-name: HikariPool
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://database-smsdb-prod.cdioma8cu2mt.ap-southeast-1.rds.amazonaws.com:3306/smsdb?useSSL=false&useUnicode=true&characterEncoding=utf-8&verifyServerCertificate=false&allowMultiQueries=true
+    username: admin
+    password: Smsdb_Prod&BosiCloud^2024
+  redis:
+    host: 13.213.121.180
+    port: 6376
+    password: redis888
+    jedis:
+      pool:
+        max-idle: 2
+        min-idle: 1
+        max-active: 3
+        max-wait: 3000
+  session:
+    store-type: redis
+sms:
+  endpoint:
+    services:
+      send-Message-Url: https://api.xindacloud.com/api/v1/portal/sms/open/submit
+      verify-Ip-Address: https://api.xindacloud.com/api/v1/portal/sms/open/request/Val/verifyIPAddress
+  thread:
+    pool:
+      max-thread: 20
+  aws:
+    region: ap-southeast-1
+    bucketName: ${sms_report_bucket}
+  report:
+    path: /tmp
+swagger:
+  enable: false
